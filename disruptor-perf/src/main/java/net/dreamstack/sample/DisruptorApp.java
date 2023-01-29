@@ -7,14 +7,14 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import org.HdrHistogram.Histogram;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static net.dreamstack.sample.CommonStat.startHistoReader;
 
 /**
  * Hello world!
  */
-public class App {
+public class DisruptorApp {
     public static void main(String[] args) {
         Disruptor<DummyEvent> disruptor = new Disruptor<>(DummyEvent::new,
                 1024 * 16,
@@ -37,16 +37,7 @@ public class App {
             }
         });
 
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-            System.out.printf("Total count = %d\n", histogram1.getTotalCount());
-            System.out.printf("1 Hop    Delay = 99.99%% = %d us\n", Math.round(histogram1.getValueAtPercentile(99.99) / 1_000.0f));
-            System.out.printf("Enqueue  Delay = 99.99%% = %d us\n", Math.round(histogram2.getValueAtPercentile(99.99) / 1_000.0f));
-            System.out.printf("Total  Delay = 99.99%% = %d us\n", Math.round(histogram3.getValueAtPercentile(99.99) / 1_000.0f));
-
-            histogram1.reset();
-            histogram2.reset();
-            histogram3.reset();
-        }, 10, 10, TimeUnit.SECONDS);
+        startHistoReader(histogram1, histogram2, histogram3);
 
         disruptor.start();
 

@@ -36,6 +36,15 @@
             <version>2.1.12</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/net.openhft/chronicle-queue -->
+        <!-- https://mvnrepository.com/artifact/net.openhft/chronicle-queue -->
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-queue</artifactId>
+            <version>5.22.28</version>
+        </dependency>
+
+
 
     </dependencies>
 </project>
