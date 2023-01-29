@@ -14,9 +14,9 @@ public class CommonStat {
             System.out.printf("Enqueue  Delay = 99.99%% = %d us\n", Math.round(histogram2.getValueAtPercentile(99.99) / 1_000.0f));
             System.out.printf("Total  Delay = 99.99%% = %d us\n", Math.round(histogram3.getValueAtPercentile(99.99) / 1_000.0f));
 
-            histogram1.reset();
+            /*histogram1.reset();
             histogram2.reset();
-            histogram3.reset();
+            histogram3.reset();*/
         }, 10, 10, TimeUnit.SECONDS);
     }
 

@@ -16,7 +16,9 @@ import static net.dreamstack.sample.CommonStat.startHistoReader;
  */
 public class DisruptorApp {
     public static void main(String[] args) {
-        Disruptor<DummyEvent> disruptor = new Disruptor<>(DummyEvent::new,
+        ThroughputController controller = new ThroughputController(50_000);
+
+        Disruptor<DummyEventContext> disruptor = new Disruptor<>(DummyEventContext::new,
                 1024 * 16,
                 DaemonThreadFactory.INSTANCE,
                 ProducerType.SINGLE,
@@ -27,9 +29,10 @@ public class DisruptorApp {
         Histogram histogram2 = new Histogram(3);
         Histogram histogram3 = new Histogram(3);
 
-        disruptor.handleEventsWith(new EventHandler<DummyEvent>() {
+        disruptor.handleEventsWith(new EventHandler<DummyEventContext>() {
             @Override
-            public void onEvent(DummyEvent event, long sequence, boolean endOfBatch) throws Exception {
+            public void onEvent(DummyEventContext ctx, long sequence, boolean endOfBatch) throws Exception {
+                DummyEvent event = ctx.getDummyEvent();
                 long oneHopDelay = System.nanoTime() - event.getCreatedTime();
                 histogram1.recordValue(oneHopDelay);
                 histogram2.recordValue(event.getEnqueueDelay());
@@ -43,7 +46,12 @@ public class DisruptorApp {
 
         final AtomicLong startTime = new AtomicLong(System.nanoTime());
         while (true) {
-            disruptor.getRingBuffer().publishEvent((event, sequence) -> {
+            if (!controller.canProduce()) {
+                continue;
+            }
+            disruptor.getRingBuffer().publishEvent((ctx, sequence) -> {
+                DummyEvent event = new DummyEvent();
+                ctx.setDummyEvent(event);
                 long timeNow = System.nanoTime();
                 event.setCreatedTime(timeNow);
                 event.setEnqueueDelay(timeNow - startTime.get());
