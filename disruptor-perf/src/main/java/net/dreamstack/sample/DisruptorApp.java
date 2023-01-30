@@ -16,7 +16,7 @@ import static net.dreamstack.sample.CommonStat.startHistoReader;
  */
 public class DisruptorApp {
     public static void main(String[] args) {
-        ThroughputController controller = new ThroughputController(50_000);
+        ThroughputController controller = new ThroughputController(10_000_000);
 
         Disruptor<DummyEventContext> disruptor = new Disruptor<>(DummyEventContext::new,
                 1024 * 16,

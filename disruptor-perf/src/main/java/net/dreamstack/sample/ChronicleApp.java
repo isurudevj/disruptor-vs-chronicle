@@ -17,7 +17,7 @@ public class ChronicleApp {
 
     public static void main(String[] args) {
         // start chronicle
-        ThroughputController controller = new ThroughputController(50_000);
+        ThroughputController controller = new ThroughputController(10_000_000);
         String queuePath = Paths.get(OS.TMP, "chronicle-test").toString();
         IOTools.deleteDirWithFiles(queuePath);
         SingleChronicleQueue queue = SingleChronicleQueueBuilder

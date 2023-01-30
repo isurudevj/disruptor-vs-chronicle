@@ -2,18 +2,19 @@ package net.dreamstack.sample;
 
 import org.HdrHistogram.Histogram;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static net.dreamstack.sample.CommonStat.startHistoReader;
 
-public class LinkBlockingQueueApp {
+public class ArrayBlockingQueueApp {
 
     public static void main(String[] args) {
         ThroughputController controller = new ThroughputController(10_000_000);
         // create link blocking queue
-        LinkedBlockingQueue<DummyEvent> queue = new LinkedBlockingQueue<>();
+        ArrayBlockingQueue<DummyEvent> queue = new ArrayBlockingQueue<>(1024 * 16);
 
         Histogram histogram1 = new Histogram(3);
         Histogram histogram2 = new Histogram(3);
